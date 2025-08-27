@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+import usuarioSchema from "../contracts/usuarios.contract";
+
+
 describe("Testes da Funcionalidade Usuários", () => {
   it("Deve validar contrato de usuários", () => {
     cy.request("usuarios").then((response) => {
@@ -69,8 +72,13 @@ describe("Testes da Funcionalidade Usuários", () => {
   });
 
   it("Deve deletar um usuário previamente cadastrado", () => {
-    cy.request("usuarios").then((response) => {
-      let id = response.body.usuarios[0]._id;
+    cy.cadastrarUsuario(
+      "Usuário para deletar",
+      `ebac${Math.floor(Math.random() * 1000000000)}@teste.com.br`,
+      "teste",
+      "true"
+    ).then((response) => {
+      let id = response.body._id;
       cy.request({
         method: "DELETE",
         url: `usuarios/${id}`,
@@ -78,6 +86,7 @@ describe("Testes da Funcionalidade Usuários", () => {
         expect(response.status).to.equal(200);
         expect(response.body.message).to.equal("Registro excluído com sucesso");
       });
-    });
+    }
+    )
   });
 });
